@@ -5,10 +5,9 @@ Other Topics
 -Bluetooth
 -Traceroute
 
-
 What is a Network?
--All devices are either HOSTS or end systems
 -Devices are connected with COMMUNICATION LINKs (fiber, copper, radio, satellite) and have a transmission rate (bandwidth)
+-All devices are either HOSTS or END SYSTEMS
 -Packet switches forward packets between devices (routers and switches)
 
 1.1 What is the Internet? (pg 26)
@@ -24,7 +23,7 @@ Hardware description
 Software Description
 -an infrastructure that provides services to applications
 -email, browsing, games, messaging, streaming, file sharing: distributed applications
--Applcations run in end systems, not in the siwtches or rest of network core
+-applications run in end systems, not in the switches or rest of network core
 -Internet serves as platform to transmit and receive data between applications
 -APIs specify how the software asks Internet infrastructure to deliver data from one system to another
 
@@ -56,7 +55,7 @@ Dial-up
 DSL (Digital Subscriber line) and Cable
 -obtains DSL access from telco
 -telephone line carries data and telephone signals simultaneously at different frequencies
--traffic is split and redirected at telco central office with multiplexer
+-traffic is split and redirected at telco central office (CO) with multiplexer
 -transmission rate is dependent on the distance between home and CO, gauge of wire, and interference
 -DSL is for shorter distances (5-10 miles to CO)
 
@@ -76,13 +75,13 @@ https://www.youtube.com/watch?v=0MwMkBET_5I
 -often fiber is shared coming out of CO and then split as it gets to homes
 -Active Optical Network vs Passive Optical Network (AON/PON)
 -AON is switched ethernet
--PON: each home has optical network terminator, connected to dedicated fibter to neighbourhood splitter
--splitter combines multiple lines into a shared optical fiber and connects to an optical line terminator in the CO 
+-PON: each home has optical network terminator, connected to dedicated fiber to neighbourhood splitter
+-splitter combines multiple lines into a shared optical fiber and connects to an optical line terminator in the CO
 -OLT converts between optical and electric signals and connects to rest of internet
 -10 to 20 Mbps
 
 Ethernet
--LAN to connect systems to edge couter
+-LAN to connect systems to edge router
 -users connect to ethernet switch, grants 100Mbps access, up to 1 to 10 Gbps
 
 WiFi
@@ -107,17 +106,17 @@ Coax
 -copper conductors, concentric rather than parallel
 -can achieve high bit rates
 -guided shared medium: many end systems can be connected directly to cable while having the traffic split
--transmitter shifts digital signal to a specific frequency band 
+-transmitter shifts digital signal to a specific frequency band
 
 Fiber
--thin flexible medium that conducts pulses of light, each pulse representing a bit 
--hundrends of gigabit per second
+-thin flexible medium that conducts pulses of light, each pulse representing a bit
+-hundreds of gigabits per second
 -immune to EM interference, low signal attenuation (weakening) up to 100km, hard to tap
 -good for overseas links
--higher cost for transmitters, receivers, swithces
+-higher cost for transmitters, receivers, switches
 -51.8 to 39.8 Gbps
 
-Terrestrial Radio 
+Terrestrial Radio
 -no physical wire to be installed
 -go through walls (though degrades signal)
 -carry long distance
@@ -131,19 +130,19 @@ Satellite
 -communicate to each other and ground stations
 
 1.3. Network Core (49)
--consists of packet switches and links that connect end systems 
+-consists of packet switches and links that connect end systems
 -Two primary approaches for data movement: Circuit Switches and Packet Switches
 Circuit Switches: resources along path (buffers, link transmission rate) are entirely reserved for duration
 Packet Switches: Session uses resource on demand, may have to wait for access
 -Analogy Restaurant with only reservations and one without any
 -Overhead of requesting all resources before hand vs potentially having to wait
 -Telephone networks are circuit switched, network must establish end to end connection before transfer, stay connected for duration
--guaranteed constant rate 
+-guaranteed constant rate
 -Internet is packet-switched
--Packet are sent over network without reservation 
+-packet are sent over network without reservation
 -congestion can cause waiting, buffered
--does its best, but no gurantees for time
--hard to neatly classify into pure circuit or packet-switched networks in telecomms, nice simplistic view 
+-does its best, but no guarantees for time
+-hard to neatly classify into pure circuit or packet-switched networks in telecomms, nice simplistic view
 
 Circuit Switching (pg 51)
 -Network comprises of several circuit switches connected to each other
@@ -160,15 +159,15 @@ Circuit Switching (pg 51)
 
 -Circuit switching can be wasteful since dedicated circuits are idle during silent periods
 -when people stop talking, resources are still being consumed
--establishing end to end circuits and reserving bandwidth is completed and requires complex signaling software to coordinate operation of switches along path
+-establishing end to end circuits and reserving bandwidth is complicated and requires complex signaling software to coordinate operation of switches along path
 
 Packet Switching (pg 54)
 -distributed applications exchange messages, which can contain anything protocol designer wants
 -control functions or data
 -long messages are broken into packets
--packets travvel through links and packet switches
+-packets travel through links and packet switches
 -packet switches use store-and-forward at the inputs to the links
--entire packet must be received before it can transmit the first bit to the destination 
+-entire packet must be received before it can transmit the first bit to the destination
 -switches also have output buffers, which store outgoing packets
 -if packet needs to be transmitted, but link is already used, stored in buffer
 -packet loss can occur in congested network, for arriving or already queued packets
@@ -176,14 +175,14 @@ Packet Switching (pg 54)
 
 Statistical Multiplexing
 -packet switching not suitable for real time, variable and unpredictable end to end delays
--however it offers better sharing of bandwidth than circuit switches, simpler and more efficient to implement 
--circuit based switches much reserve and evenly distribute links between all potential users 
+-however it offers better sharing of bandwidth than circuit switches, simpler and more efficient to implement
+-circuit based switches much reserve and evenly distribute links between all potential users
 -statistical likelihood that X number of users will simultaneously use a line is very low
 
 Packet Transmission through Packet-Switched Network (pg 57)
 -packets have destination address in its header
 -address has an hierarchical structure
--router examines portion of packet's destination address and forwards to an adjacent router 
+-router examines portion of packet's destination address and forwards to an adjacent router
 -routers have forwarding tables that map destinations to outbound links
 -Internet has routing protocols that are used to automatically set forwarding tables
 -determine shortest path from each oruter to each destination, configure forwarding tables accordingly
@@ -193,24 +192,24 @@ ISPs and Internet Backbones (pg 58)
 -Internet is a network of networks
 -access ISPs situated at edge of Internet are connect to rest of the Internet through a tiered hierarchy of ISPs
 -bottom of hiearchy is access ISP, top is T1 ISP
--T1 ISP is like any other network in that has links and routers connected to other networks 
+-T1 ISP is like any other network in that has links and routers connected to other networks
 -T1 speeds are much faster to handle all of the traffic, routers must forward at extremely high rate
 -T1: directly connected to other T1s, connected to large number of T2s and other customer networks, international
 -T1: Internet backbone networks, include Sprint, Bell, Rogers
--T2: regional to national coverage, connects to only a few T1 ISPs, routs traffic through T1s 
--T2 is a customer of the T1, T1 is a provider 
+-T2: regional to national coverage, connects to only a few T1 ISPs, routs traffic through T1s
+-T2 is a customer of the T1, T1 is a provider
 -Companies or other organizations connect directly to T1 or T2, being direct customers of them
 -Providers charge customers rate based on tranmission rate of the link
--T2s can also connect to each other, meaning traffic doesn't have to be routed to T1 connections 
+-T2s can also connect to each other, meaning traffic doesn't have to be routed to T1 connections
 -Lower tier ISPs which connect to the T2s, below those are the access ISPs
--some T1s also act as T2s, directly selling to consumers and content providers, as well as lower tier ISPs 
+-some T1s also act as T2s, directly selling to consumers and content providers, as well as lower tier ISPs
 -points where ISP connects to another ISP is a Point of Presence (POP)
--POP is a group of one or more routers where different ISPs connect to each other 
+-POP is a group of one or more routers where different ISPs connect to each other
 
 1.4 Delay, Loss, and Throughput of Packet-switched networks (pg 61)
 
-Delay 
--packets travel starts in a host, through routers, and to another host 
+Delay
+-packets travel starts in a host, through routers, and to another host
 -packets suffer delay at each node along path
 Delays:
 -nodal processing
@@ -218,76 +217,75 @@ Delays:
 -transmission
 -propagation
 
--accumulate into total nodal delay 
+-accumulate into total nodal delay
 
 Nodal Processing Delay
 -time to examine packet header and determine where to direct packet
 -also things like bit-level errors that occured during transfer
 -microseconds or less
--directs packet to queue that for link that leads to destination 
+-directs packet to queue that for link that leads to destination
 
 Queueing Delay
 -waits in queue before being sent onto the link
 -depends on number of preceding packets (can be 0)
 -microseconds to milliseconds
 
-Transmission Delay 
+Transmission Delay
 -length of packet L bits
 -transfer rate R bits/s
--transmission delay is L/R 
+-transmission delay is L/R
 -amount of time to transmit all of the packet bits into the link
 -microseconds to milliseconds
 
-Progagation Delay 
--once in link it takes time to propagate to destination router 
+Progagation Delay
+-once in link it takes time to propagate to destination router
 -speed depends on propagation speed of medium (fiber, twisted-pair coppe)
--2*10^8 m/s to 3*10^8 m/s 
--close to speed of light 
+-2*10^8 m/s to 3*10^8 m/s
+-close to speed of light
 -distance between two routers divided by propagation speed (d/s)
--once bits arrive for packet at B, process is repeated to next router 
+-once bits arrive for packet at B, process is repeated to next router
 
 Transmission vs Propagation
 -transmission is time to process and put bits of packet into the link
 -propagation is time it travels on the line
--sometimes with slow tranmission time and fast propagation, first bits of a packet can arrive of destination while remaining packets are still being transmitted by previous router 
+-sometimes with slow tranmission time and fast propagation, first bits of a packet can arrive of destination while remaining packets are still being transmitted by previous router
 -usually d_prop and d_transmission are main factors
 
 
 Queueing Delay and Packet Loss (pg 64)
 -queueing delay varies packet to packet; when queue is empty it is 0, but when it is full packets at the end have a high queue time
 -use statistical measures, average queuing delay, varaiance, probability that it exceeds X
--delay depends on factors such as 
+-delay depends on factors such as
 -rate at which traffic arrives at queue
 -transmission rate
--steady stream or burst 
+-steady stream or burst
 -average rate of arriving packets, in packets/s
 -L is length packet, R is transmission rate
 -traffic intensity = La/R
--if La/R > 1, bits are arriving faster than link can transmit out of the queue, always aim for <1 
--usually packet transmission is essentially random 
+-if La/R > 1, bits are arriving faster than link can transmit out of the queue, always aim for <1
+-usually packet transmission is essentially random
 -as intensity approaches 1, average queuing delay approaches infinity asymptotically
 
-Packet Loss 
+Packet Loss
 -queues are finite in capacity
--if a packet arrives at a full queue, routers can drop packets and it is lost 
+-if a packet arrives at a full queue, routers can drop packets and it is lost
 -at end system, it appears as if packet was transmitted, but never emerged on the other end
 -packet loss increases as traffic intensity increases
--performance at node is measured in delay and % packet loss 
+-performance at node is measured in delay and % packet loss
 
 1.4.3 End to End Delay (pg 67)
 -total end to end delay = number of nodes (d_proc + d_trans + d_prop), assuming no queuing delay and uniform delays across nodes
 
 Traceroute
 -send special packet to a destination host
--when routers along the way receive the packet, it sends a response back to origin with information about router it visited 
+-when routers along the way receive the packet, it sends a response back to origin with information about router it visited
 -records time taken, name and address of router, returns message
 -packets are sent and marked to each intermediary router
--when all respones are returned, originator can reconstruct route and time that packets traveled to destination 
+-when all respones are returned, originator can reconstruct route and time that packets traveled to destination
 -repeats process 3x to get average
 -RFC 1393
 
 End system, Application, and Other Delays
--dial modems at modulation/encoding delay (10s of ms), other tech is negligible 
--end system transmitting into a shared medium may purposefully delay its transmission as a part of its protocol to share with other systems 
+-dial modems at modulation/encoding delay (10s of ms), other tech is negligible
+-end system transmitting into a shared medium may purposefully delay its transmission as a part of its protocol to share with other systems
 -media packetization delay; app fills packet with encoded digitized speech before sending
-
