@@ -69,7 +69,7 @@ Cable
 -DSL links are dedicated, cable has higher transmission rate
 -satellite for rural areas
 
-Fiber
+Fiber (?)
 https://www.youtube.com/watch?v=0MwMkBET_5I
 -direct fiber, one line for each home, highest bandwidth
 -often fiber is shared coming out of CO and then split as it gets to homes
@@ -144,7 +144,7 @@ Packet Switches: Session uses resource on demand, may have to wait for access
 -does its best, but no guarantees for time
 -hard to neatly classify into pure circuit or packet-switched networks in telecomms, nice simplistic view
 
-Circuit Switching (pg 51)
+Circuit Switching (pg 51) (?)
 -Network comprises of several circuit switches connected to each other
 -Each host connected to a circuit switch which can support n links
 -When two hosts want to connect, 1/n links are reserved on each switch between the hosts
@@ -161,7 +161,7 @@ Circuit Switching (pg 51)
 -when people stop talking, resources are still being consumed
 -establishing end to end circuits and reserving bandwidth is complicated and requires complex signaling software to coordinate operation of switches along path
 
-Packet Switching (pg 54)
+Packet Switching (pg 54) (?)
 -distributed applications exchange messages, which can contain anything protocol designer wants
 -control functions or data
 -long messages are broken into packets
@@ -185,7 +185,7 @@ Packet Transmission through Packet-Switched Network (pg 57)
 -router examines portion of packet's destination address and forwards to an adjacent router
 -routers have forwarding tables that map destinations to outbound links
 -Internet has routing protocols that are used to automatically set forwarding tables
--determine shortest path from each oruter to each destination, configure forwarding tables accordingly
+-determine shortest path from each router to each destination, configure forwarding tables accordingly
 -traceroute
 
 ISPs and Internet Backbones (pg 58)
@@ -208,6 +208,8 @@ ISPs and Internet Backbones (pg 58)
 
 1.4 Delay, Loss, and Throughput of Packet-switched networks (pg 61)
 
+Train Station Analogy
+
 Delay
 -packets travel starts in a host, through routers, and to another host
 -packets suffer delay at each node along path
@@ -221,7 +223,7 @@ Delays:
 
 Nodal Processing Delay
 -time to examine packet header and determine where to direct packet
--also things like bit-level errors that occured during transfer
+-also things like bit-level errors that occurred during transfer
 -microseconds or less
 -directs packet to queue that for link that leads to destination
 
@@ -237,7 +239,7 @@ Transmission Delay
 -amount of time to transmit all of the packet bits into the link
 -microseconds to milliseconds
 
-Progagation Delay
+Propagation Delay
 -once in link it takes time to propagate to destination router
 -speed depends on propagation speed of medium (fiber, twisted-pair coppe)
 -2*10^8 m/s to 3*10^8 m/s
@@ -248,13 +250,13 @@ Progagation Delay
 Transmission vs Propagation
 -transmission is time to process and put bits of packet into the link
 -propagation is time it travels on the line
--sometimes with slow tranmission time and fast propagation, first bits of a packet can arrive of destination while remaining packets are still being transmitted by previous router
--usually d_prop and d_transmission are main factors
-
+-sometimes with slow transmission time and fast propagation, first bits of a packet can arrive of destination while remaining packets are still being transmitted by previous router
+(Sci Fi Warp gate)
+-usually d_prop and d_transmission are main factors in overall delay
 
 Queueing Delay and Packet Loss (pg 64)
 -queueing delay varies packet to packet; when queue is empty it is 0, but when it is full packets at the end have a high queue time
--use statistical measures, average queuing delay, varaiance, probability that it exceeds X
+-use statistical measures, average queuing delay, variance, probability that it exceeds X
 -delay depends on factors such as
 -rate at which traffic arrives at queue
 -transmission rate
@@ -281,7 +283,7 @@ Traceroute
 -when routers along the way receive the packet, it sends a response back to origin with information about router it visited
 -records time taken, name and address of router, returns message
 -packets are sent and marked to each intermediary router
--when all respones are returned, originator can reconstruct route and time that packets traveled to destination
+-when all responses are returned, originator can reconstruct route and time that packets traveled to destination
 -repeats process 3x to get average
 -RFC 1393
 
@@ -289,3 +291,87 @@ End system, Application, and Other Delays
 -dial modems at modulation/encoding delay (10s of ms), other tech is negligible
 -end system transmitting into a shared medium may purposefully delay its transmission as a part of its protocol to share with other systems
 -media packetization delay; app fills packet with encoded digitized speech before sending
+
+1.4.4 Throughput in Computer Networks
+
+-E2E throughput of the network
+-for phones and streaming, delay is minimized and throughput > threshold rate
+-for file transfer, some delay is fine, throughput needs to be maximized
+-bottleneck links are the slowest in the network, usually on the client side
+-when shared core link is the bottleneck, speed is split across all traffic evenly
+
+1.5 Protocol Layers (pg 72)
+
+1.5.1 Layered Architecture
+
+-flight analogy
+-a layer has corresponding functions at each end of the connection (ie. client and server side)
+-each layer, combined with lower level layers, implement some functionality or service
+-layers perform certain actions within that layer and may use the services or functions of the layer below
+-layers are modular and can be modified as long as they provide the same function to the dependent layers
+
+Protocol Layering
+
+ISO OSI Reference model
+Application
+Presentation
+Session
+Transport
+Network
+Link
+Physical
+
+Internet Protocol Stack
+
+-ASTNLP (no presentation or session level) by default
+-up to developer to implement presentation/session if needed
+
+-network hardware, software, and the protocols that govern them are organized into layers
+-each protocol offers some service to the layer above it ie. the service model
+-eg. one layer may offer reliable message delivery from one edge node to another edge node. To do this, it uses the layer below it that only accomplishes unreliable message delivery and then adds functionality to detect and resend lost messages
+-protocol layers can be implemented by hardware and/or software
+-layers towards the top are usually software driven and layers towards the bottom are usually hardware driven; layers in the middle are some combination
+-each layer is often distributed across the nodes of the network
+-layering model can duplicate some functionality between layers (eg. error recovery on a link and end to end basis)
+-some layers may only function with data present in another layer, which in contradictory to the separation of layers
+
+Application Layer
+-network applications and app-layer protocols reside
+-Internet app-layer protocols include HTTP (web transfer), SMTP email, FTP (files), DNS (domain name system)
+-packets of information sent at this layer are "messages"
+
+Transport Layer
+-transports application layer messages between app end points
+-TCP and UDP
+-TCP is connection-based, guaranteed-delivery, congestion control, segmentation for throttling
+-UDP is connectionless, no reliability, no control
+-packet of information is a segment
+
+Network Layer
+-transports packets from host to host, called "datagrams"
+-transport-layer segment gets passed with destination to network layer, network layer takes it to host destination
+-IP Protocol
+-network layer also has routing protocols that determine routes that datagrams take between hosts
+-lots of routing protocols exist
+
+Link Layer
+-transmit the datagrams themselves, datagrams arrive from network layer, get transmitted, and then passed up to network layer of destination
+-some try to ensure reliable delivery over the link
+-Ethernet, WiFi, Point-to-Point (PPP)
+-datagram may be handled by different link layer protocols
+-packets are "frames"
+
+Physical Layer
+-transmits individual bits
+-protocols are link dependent
+-Ethernet has several protocols, for twisted pair as well as coax
+-amplitude, frequency, light pulses
+
+OSI Layers
+
+Presentation Layer
+-allow communicating applications to interpret meaning of data exchanged
+-compression, encryption, description
+
+Session Layer
+-provides delimiting and synchronization of data exchange (checkpointing and recovery)
