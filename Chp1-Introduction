@@ -1,16 +1,14 @@
-Chapter 1
-Other Topics
+Chapter 1 - Introduction
+Other topics
 -Digital vs Analog
--Fiber
 -Bluetooth
--Traceroute
 
 What is a Network?
--Devices are connected with COMMUNICATION LINKs (fiber, copper, radio, satellite) and have a transmission rate (bandwidth)
--All devices are either HOSTS or END SYSTEMS
--Packet switches forward packets between devices (routers and switches)
+-devices are connected with COMMUNICATION LINKs (fiber, copper, radio, satellite) and have a transmission rate (bandwidth)
+-all devices are either HOSTS or END SYSTEMS
+-packet switches forward packets between devices (routers and switches)
 
-1.1 What is the Internet? (pg 26)
+1.1 What is the Internet?
 
 Hardware description
 -computer network that interconnects millions of devices around the world
@@ -37,39 +35,47 @@ Protocols
 -If one side does not abide by protocol, communication falls apart
 -requires parties to use same protocol
 
-1.2 Network Edge (pg 33)
+1.2 Network Edge
 -hosts (end systems): clients and servers, because they "host" applications
 -clients on one end system request and receive data from server on another end system
 -client-server internet applications are distributed applications
+-servers these reside in large data centers
 -connecting Internet can be considered a black box joining the two end systems
 -P2P is an example of non-pure client or server applications
 
-Access Network
--physical (or wireless) links that connect end system to first router to other end system
+1.2.1 Access Networks
+-physical (or wireless) links that connect end system to first (edge) router that leads to other end system
 -connected at junctions with the telco central office (CO)
 
 Dial-up
 -convert digital signal to analog signal
 -transfer over phone line, max of 56 kbps
 
-DSL (Digital Subscriber line) and Cable
+DSL (Digital Subscriber line)
 -obtains DSL access from telco
 -telephone line carries data and telephone signals simultaneously at different frequencies
--traffic is split and redirected at telco central office (CO) with multiplexer
--transmission rate is dependent on the distance between home and CO, gauge of wire, and interference
+--Downstream: 50kHz to 1 MHz
+--Upstream: 4kHz to 50kHz
+--Telephony: 0 to 4 kHz
+-traffic is split and redirected at telco central office (CO) with DSLAM (DSL Access Multiplexer)
+-customer side, splitter separates data and signals arriving to home and forwards to modem
+-DSL standards define transmission of 12 Mbps down, 1.8 up or 24 down/2.5 up - thus is asymmetric
+-transmission rate is dependent on the distance between throttling, home and CO, gauge of wire, and interference
 -DSL is for shorter distances (5-10 miles to CO)
 
 Cable
 -cable head end broadcasts TV through distribution network of coax cable to residence
 -DSL uses phone infrastructure, cable uses TV infrastructure
--fiber and coax are used, hybrid fiber coax
--shared broadcast medium
--every packet sent travels downstream to every home and every upload travels to all head end
+-fiber and coax are used, hybrid fiber coax (HFC)
+-Cable Modem Termination system converts analog signals from downstream homes to digital signals
+-transmission rate of about 42.8 Mbps down, 30.7 up (affected by throttling and impairments)
+-shared broadcast medium, every packet sent travels downstream to every home and every upload travels to all head end
 -can cause congestion, collisions can occur on uploads
 -DSL links are dedicated, cable has higher transmission rate
 -satellite for rural areas
 
 Fiber (?)
+-Fiber to the home emerging
 https://www.youtube.com/watch?v=0MwMkBET_5I
 -direct fiber, one line for each home, highest bandwidth
 -often fiber is shared coming out of CO and then split as it gets to homes
@@ -81,8 +87,9 @@ https://www.youtube.com/watch?v=0MwMkBET_5I
 -10 to 20 Mbps
 
 Ethernet
--LAN to connect systems to edge router
+-used in LANs to connect systems to edge router
 -users connect to ethernet switch, grants 100Mbps access, up to 1 to 10 Gbps
+-use twisted-pair copper wire (CAT5) to connect to Ethernet switch
 
 WiFi
 -Wireless LAN: users transfer to and from access point
@@ -91,7 +98,12 @@ WiFi
 -802.11 up to 54 Mbps
 -WiMAX
 
-Physical Media
+Wide Area Access Networks (WANs)
+-use same infrastructure as cellular telephony
+-third generation (3G) and 4G, packet-switched wide-area networks
+-LTE (Long-Term Evolution), roots in 3G, 10 Mbps
+
+1.2.2 Physical Media
 -bits of data goes through a series of transmitter receiver pairs
 -propagated across electromagnetic waves or optical pulses across physical medium
 -can be different types along path (twisted pair copper, coax, fiber, radio, satellite)
@@ -100,7 +112,9 @@ Physical Media
 
 Twisted-Pair Copper Wire
 -cheap, most used
+-twisted to prevent interference from surrounding wires
 -unshielded twisted pair (UTP5), up to 1 Gbps for hundreds of meters
+-CAT6a up to 10Gbps
 
 Coax
 -copper conductors, concentric rather than parallel
@@ -129,9 +143,20 @@ Satellite
 -LEO close, but move
 -communicate to each other and ground stations
 
-1.3. Network Core (49)
+1.3 Network Core
+-messages are exchanged between end systems
 -consists of packet switches and links that connect end systems
--Two primary approaches for data movement: Circuit Switches and Packet Switches
+
+Packet Transmission through Packet-Switched Network
+-packets have destination address in its header
+-address has an hierarchical structure
+-router examines portion of packet's destination address and forwards to an adjacent router
+-routers have forwarding tables that map destinations to outbound links
+-Internet has routing protocols that are used to automatically set forwarding tables
+-determine shortest path from each router to each destination, configure forwarding tables accordingly
+-traceroute
+
+Circuit Switches and Packet Switches
 Circuit Switches: resources along path (buffers, link transmission rate) are entirely reserved for duration
 Packet Switches: Session uses resource on demand, may have to wait for access
 -Analogy Restaurant with only reservations and one without any
@@ -144,7 +169,7 @@ Packet Switches: Session uses resource on demand, may have to wait for access
 -does its best, but no guarantees for time
 -hard to neatly classify into pure circuit or packet-switched networks in telecomms, nice simplistic view
 
-Circuit Switching (pg 51) (?)
+Circuit Switching  (?)
 -Network comprises of several circuit switches connected to each other
 -Each host connected to a circuit switch which can support n links
 -When two hosts want to connect, 1/n links are reserved on each switch between the hosts
@@ -161,7 +186,7 @@ Circuit Switching (pg 51) (?)
 -when people stop talking, resources are still being consumed
 -establishing end to end circuits and reserving bandwidth is complicated and requires complex signaling software to coordinate operation of switches along path
 
-Packet Switching (pg 54) (?)
+Packet Switching  (?)
 -distributed applications exchange messages, which can contain anything protocol designer wants
 -control functions or data
 -long messages are broken into packets
@@ -179,16 +204,7 @@ Statistical Multiplexing
 -circuit based switches much reserve and evenly distribute links between all potential users
 -statistical likelihood that X number of users will simultaneously use a line is very low
 
-Packet Transmission through Packet-Switched Network (pg 57)
--packets have destination address in its header
--address has an hierarchical structure
--router examines portion of packet's destination address and forwards to an adjacent router
--routers have forwarding tables that map destinations to outbound links
--Internet has routing protocols that are used to automatically set forwarding tables
--determine shortest path from each router to each destination, configure forwarding tables accordingly
--traceroute
-
-ISPs and Internet Backbones (pg 58)
+ISPs and Internet Backbones
 -Internet is a network of networks
 -access ISPs situated at edge of Internet are connect to rest of the Internet through a tiered hierarchy of ISPs
 -bottom of hiearchy is access ISP, top is T1 ISP
@@ -205,12 +221,14 @@ ISPs and Internet Backbones (pg 58)
 -some T1s also act as T2s, directly selling to consumers and content providers, as well as lower tier ISPs
 -points where ISP connects to another ISP is a Point of Presence (POP)
 -POP is a group of one or more routers where different ISPs connect to each other
+-large companies like Google or Amazon set up their own Content Provider Networks, directly connecting to own servers and to lower tier ISPs
+--reduces payments to ISPs, greater control of content delivery
 
-1.4 Delay, Loss, and Throughput of Packet-switched networks (pg 61)
+1.4 Delay, Loss, and Throughput of Packet-switched networks
 
 Train Station Analogy
 
-Delay
+1.4.1 Delay
 -packets travel starts in a host, through routers, and to another host
 -packets suffer delay at each node along path
 Delays:
@@ -254,7 +272,7 @@ Transmission vs Propagation
 (Sci Fi Warp gate)
 -usually d_prop and d_transmission are main factors in overall delay
 
-Queueing Delay and Packet Loss (pg 64)
+Queueing Delay and Packet Loss
 -queueing delay varies packet to packet; when queue is empty it is 0, but when it is full packets at the end have a high queue time
 -use statistical measures, average queuing delay, variance, probability that it exceeds X
 -delay depends on factors such as
@@ -275,7 +293,7 @@ Packet Loss
 -packet loss increases as traffic intensity increases
 -performance at node is measured in delay and % packet loss
 
-1.4.3 End to End Delay (pg 67)
+1.4.3 End to End Delay
 -total end to end delay = number of nodes (d_proc + d_trans + d_prop), assuming no queuing delay and uniform delays across nodes
 
 Traceroute
@@ -300,7 +318,7 @@ End system, Application, and Other Delays
 -bottleneck links are the slowest in the network, usually on the client side
 -when shared core link is the bottleneck, speed is split across all traffic evenly
 
-1.5 Protocol Layers (pg 72)
+1.5 Protocol Layers
 
 1.5.1 Layered Architecture
 
@@ -323,7 +341,7 @@ Physical
 
 Internet Protocol Stack
 
--ASTNLP (no presentation or session level) by default
+-APSTNLP (no presentation or session level) by default
 -up to developer to implement presentation/session if needed
 
 -network hardware, software, and the protocols that govern them are organized into layers
@@ -334,6 +352,8 @@ Internet Protocol Stack
 -each layer is often distributed across the nodes of the network
 -layering model can duplicate some functionality between layers (eg. error recovery on a link and end to end basis)
 -some layers may only function with data present in another layer, which in contradictory to the separation of layers
+-packets are successively encapsulated with each layer's specific payload for use at the next corresponding connecting node or destination
+-packets have header fields used for the layer currently being interfaced and the payload, which is typically a packet from layer above
 
 Application Layer
 -network applications and app-layer protocols reside
@@ -375,3 +395,90 @@ Presentation Layer
 
 Session Layer
 -provides delimiting and synchronization of data exchange (checkpointing and recovery)
+
+1.6 Networks under attack
+-malware: malicious software
+--log information, delete files
+-create a botnet, DDOS attacks
+-malware is self-replicating, attempting to seek entry to any hosts it can find
+-Internet was originally designed with assumption that all users mutually trusted each other
+-no inherent authentication or verification while transferring traffic
+
+Denial-of-Service (DOS)
+
+Vulnerability attack
+-sending well-crafted messages to vulnerable application/OS
+-can cause crash or undesirable behaviour
+
+Bandwidth flooding
+-send large deluge of packets to clog target's access link, preventing legitimate traffic
+-difficult for a single host to generate enough traffic to overwhelm link, can also be isolated and blocked
+-DDOS uses multiple sources and each blast traffic at target
+
+Connection flooding
+-establish a large number of TCP connections to target
+-host is overwhelmed by connections that it stops receiving any at all
+
+Packet Sniffing
+(conversation, eavesdropping)
+-wireless traffic can be intercepted by passive receivers, copy all packets being sent
+-packet sniffers can also be deployed in wired networks with physical access over LAN
+-Wireshark
+-sniffers do not modify traffic and thus are hard to detect
+-must assume someone is listening in and use cryptography to protect
+-need secrecy
+-Wireshark lab (awl.com/kurose-ross)
+
+Spoofing
+(fake ID)
+-construct packet with arbitrary trusted source address, malicious content, and destination
+-receiver opens the package and payload is delivered
+-IP spoofing, faking source address
+-need end-point authentication
+
+Modify or Delete Messages
+(open package and tamper)
+-Man-in-the-middle
+-malicious actor intercepts traffic between two hosts (compromised model, software module)
+-can sniff, but also inject, modify, or delete packets, compromise integrity
+-need integrity guarantee
+
+History
+
+Packet Switching: 1960s
+-telephony was dominant communication network, circuit-based for constant rate transmission
+-computers saw rising prominence, need to share computer resources over network
+-computer traffic much more bursty, waiting for reply, processing data
+-ARPAnet was early network with packet-switching, connected several nodes in a closed network
+
+Proprietary Networks and Internetworking: 1970s
+-more standalone packet-switched networks came online
+-research into connecting the different networks
+-early versions of TCP (different from today) originally had functions of IP built-in, later separated
+-TCP/UDP/IP were largely conceptually complete by end of era
+-Ethernet protocol being developed for wired networks, LANs
+
+Network Proliferation: 1980s
+-efforts were spurred by universities linking to each other
+-TCP/IP developed in 1983 for ARPAnet
+-DNS also developed
+-Minitel, French government sponsored packet-switched network for public
+
+Internet Explosion: 1990s
+-ARPAnet now defunct, now MILNET and other networks to carry traffic
+-WWW, platform for enabling and deploying hundreds of new applications
+-created by Tim Berners-Lee at CERN, based on hypertext concepts from the 1940s (Vannevar bush)
+-HTML, HTTP, web servers, browser
+-GUI interfaces under development
+-Mosaic->Netscape
+-email
+-web
+-Instant messaging, ICQ
+-P2P sharing
+-dot com crash
+
+Recent Innovations (?)
+-new apps all the time
+-P2P application
+-miniaturization
+-user generated content

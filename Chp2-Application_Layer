@@ -1,0 +1,37 @@
+Chapter 2 - Application Layer
+
+2.1 Principles of Network Applications(pg 110)
+-app development is in essence writing programs that run on different end systems and communicate over network
+--eg. Web is browser on host client and server program on Web server host
+-software needs to be written to run on multiple systems
+-do not need to write software that runs on network core (links, routers)
+
+2.1.1 Network Application Architecture (pg 110)
+
+Client-Server Architecture
+-Server: an always-on host, services requests from other hosts (clients)
+-when server receives request for object from client, it responds by sending request object
+-clients do not communicate directly
+-server address is fixed (IP address), so clients can always contact server by sending packet to server's address
+-a single host can easily be overwhelmed by client requests, data centers are clusters of hosts that create virtual server
+-infrastructure must be put into place by developer, either themselves or purchased from a provider
+
+P2P Architecture
+-minimal to no reliance on always-on infrastructure servers
+-leverages direct communication between peers, controlled by the users
+-self-scalability: peers generate workload by requesting files and also adds service capacity by redistributing files to other users
+-challenges include bandwidth asymmetry (more down than up), security (more distributed, harder to trust clients)
+-convincing users to volunteer bandwidth, storage, and computation resources
+
+2.1.2 Processes Communicating (pg 114)
+-processes, not programs, are actually communicating. Process is programming within end system
+-when processes run on same system, they can communicate directly with each other with interprocess mechanisms
+-processes on different hosts exchange messages across network
+
+Interface between Process and Network (pg 115)
+-exchanged messages must go through underlying network, go through software interface called SOCKET
+-sockets act as the interface between application layer and transport layer
+-also referred to as Application Programming Interface (API) between app and network (?)
+-developer has control of application layer, only aspects of transport layer that can be controlled are transport protocol and some the protocol's parameters (buffer and segment size)
+
+2.1.3 Transport Services Available to Applications (pg 116)
