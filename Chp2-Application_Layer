@@ -1,12 +1,12 @@
 Chapter 2 - Application Layer
 
-2.1 Principles of Network Applications(pg 110)
+2.1 Principles of Network Applications
 -app development is in essence writing programs that run on different end systems and communicate over network
 --eg. Web is browser on host client and server program on Web server host
 -software needs to be written to run on multiple systems
 -do not need to write software that runs on network core (links, routers)
 
-2.1.1 Network Application Architecture (pg 110)
+2.1.1 Network Application Architecture
 
 Client-Server Architecture
 -Server: an always-on host, services requests from other hosts (clients)
@@ -23,15 +23,557 @@ P2P Architecture
 -challenges include bandwidth asymmetry (more down than up), security (more distributed, harder to trust clients)
 -convincing users to volunteer bandwidth, storage, and computation resources
 
-2.1.2 Processes Communicating (pg 114)
+2.1.2 Processes Communicating
 -processes, not programs, are actually communicating. Process is programming within end system
 -when processes run on same system, they can communicate directly with each other with interprocess mechanisms
 -processes on different hosts exchange messages across network
 
-Interface between Process and Network (pg 115)
+Interface between Process and Network
 -exchanged messages must go through underlying network, go through software interface called SOCKET
 -sockets act as the interface between application layer and transport layer
 -also referred to as Application Programming Interface (API) between app and network (?)
 -developer has control of application layer, only aspects of transport layer that can be controlled are transport protocol and some the protocol's parameters (buffer and segment size)
 
-2.1.3 Transport Services Available to Applications (pg 116)
+Addressing Processes
+-to identify receiving process, need to specify Address of Host (IP Address) and identifier for receiving process at destination (port number)
+-Many popular apps have assigned ports
+--Web servers: 80
+--Mail (SMTP): 25
+--http://www.iana.org for common port numbers
+
+2.1.3 Transport Services Available to Applications
+-four main traits for consideration
+--Reliable data transfer
+--throughput
+--timing
+--security
+
+Reliable data transfer
+-data can be lost at routers, discarded by host, corruption
+-data loss can have serious repercussions
+-transport protocols are said to be reliable if they can guarantee the complete and error-free transfer of data
+-some apps are loss tolerant, don't need reliable transfer, audio/video can tolerate some loss
+
+Throughput
+-some apps are bandwidth sensitive, namely multimedia/streaming
+-other apps are elastic in their throughput demands, can use as little or as much as is provided (email, file transfer, etc)
+
+Timing
+-maximum delay guarantees, good for real time applications like communications, games
+-some apps don't care as much (email)
+
+Security
+-transport protocol can encrypt data transmitted
+-data integrity and end-point authentication
+
+2.1.4 Transport Services Provided Over Internet
+-TCP/IP networks have two main offerings, UDP and TCP
+
+Transmission Control Protocol
+-connection-oriented, reliable data transfer
+-handshake: client and server exchange transport layer control information before actual application-layer messages are transferred
+-TCP connection exists between two sockets on each end after handshake
+-both processes on each end can send simultaneously
+-after sending, connection in teared down
+-reliable: applications can count on TCP delivering entire stream of packets from one side to other
+-congestion control: benefits for general internet
+-throttles sending processes if network is congested between sender/receiver
+
+SSL
+-TCP inherently has no security
+-Secure Sockets Layer (SSL) created enhance TCP by providing process to process security
+-encryption, data integrity, end-point authentication
+-application needs to implement SSL library, separate SSL socket exists on machine
+-messages are passed to SSL socket API before forwarding to actual TCP socket
+
+User Datagram Protocol
+-no-frills, lightweight transport protocol
+-connectionless (no handshake)
+-unreliable: cannot guarantee complete and error-free transfer of data
+-messages may arrive out of order
+-no congestion control
+-many firewalls block UDP, some apps fall back to TCP
+
+Services not provided by protocols
+-Timing and throughput not guaranteed by protocols
+-time sensitive apps are designed to live without these guarantees, employ clever strategies to mitigate effects
+
+2.1.5 Application Layer Protocols
+App layer protocols define
+-types of messages exchanged (request/response)
+-syntax of message types (fields, delineation)
+-meaning of information in fields
+-process sends messages and responds to messages
+
+-some protocols are in RFCs, public domain (HTTP)
+-some protocols are proprietary (Skype)
+
+-app layer protocol and network apps are different, app layer is only one piece of a network app
+-web is a client-server app that allows users to obtain documents on demand
+-standard for document formats (HTML), browsers, servers (apache), app layer protocol
+-HTTP defines one piece of app
+
+2.2 Web and HTTP
+-Internet started as platform to share research, manual logins, transfer files
+-Web provides content on demand, unlike broadcast mediums like TV
+
+2.2.1 HTTP (HyperText Transfer Protocol)
+-Web's application layer protocol, implemented by client and server and exchange HTTP messages
+-HTTP defines structure of messages and how client/server exchange the messages
+
+Web page (document): consists of objects, simply an HTML file, JPEG, or video clip, addressable by a URL
+-base HTML file and several referenced objects
+-browsers implement client side HTTP
+-servers implement server slide of HTTP, store web objects at their corresponding addresses
+-popular servers include apache, microsoft server
+
+-HTTP defines how clients request content and how servers respond and transfer content
+-HTTP uses TCP as underlying transport protocol
+-initiates TCP connection with server
+-server access TCP through socket
+-client sends and receives TCP traffic through its socket
+-HTTP doesn't need to worry about lost transfers because TCP takes care of it
+-HTTP server does not retain state, HTTP is a stateless protocol
+-servers are always on, fixed IP, and respond to millions of requests
+
+2.2.2
+
+Persistent vs Non-persistent connections
+-applications may send mutliple requests back-to-back, periodically at intervals, or intermittently
+-request/response pairs can all occur over single TCP connection (persistent) or separate (non-persistent)
+-HTTP by default uses persistent, can be set to use non-persistent
+-browsers usually open 5-10 parallel TCP connections at once, each handing a separate request/response pair\
+
+Non-persistent
+-overhead of initial handshake must be made for each request being sent
+
+Persistent
+-connection remains open after initial request, subsequent requests can use same connection and avoid overhead
+
+2.2.3
+
+HTTP message format for requests and responses
+-many defined header lines possible, can be inserted by browser, server, network cache
+-
+
+HTTP Requests
+
+GET /somedir/page.html HTTP/1.1
+Host: www.someschool.edu
+2.2 • THE WEB AND HTTP 103Connection: close
+User-agent: Mozilla/5.0
+Accept-language: fr
+
+-written in human readable ASCII
+-1 to many lines
+-Request line, method, URL, HTTP version
+--Method: GET, POST, HEAD, PUT, DELETE, most commonly used is GET
+--URL: location of object
+--Version: version of HTTP being used
+-following lines: header lines
+-Host: host on where object resides, required by web proxy caches
+-Connection close: non-persistent connection
+-User-agent: browser type making request to the server (different versions to different browsers, HTML pages for example)
+-Accept-language: language version of object if applicable
+
+-Entity: empty for GET, but used for POST, filling out forms
+-not all forms use POST, some embed form data into GET request
+
+-HEAD, similar to GET
+-server responds with HTTP message, but leaves out object
+-useful for debugging
+
+-PUT: upload object to a specific path
+-DELETE: delete object on server
+
+HTTP RESPONSES
+
+HTTP/1.1 200 OK
+Connection: close
+Date: Tue, 09 Aug 2011 15:44:04 GMT
+Server: Apache/2.2.3 (CentOS)
+Last-Modified: Tue, 09 Aug 2011 15:11:03 GMT
+Content-Length: 6821
+Content-Type: text/html
+(data data data data data ...)
+
+Status line: protocol version, status code, status message (server found and is now sending object)
+--https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+Header lines:
+Date: When object was retrieved
+Server: server type message was generated by (similar to user-agent)
+Last-modified: Object last-modified, key for object caching
+Content length: bytes of object being sent
+Content Type: type of content being sent
+
+2.2.4 Cookies
+-HTTP is inherently stateless, but it still usually useful for server to identify user
+-restrict access, serve content for certain users
+-cookies help track user identities
+
+Cookie comprises of
+-cookie header line in HTTP response
+-cookie header line in HTTP request
+-cookie file on user's end system and managed by browser
+-back-end database for website
+
+-Sample scenario: initial response to first request contains SET-COOKIE field with id
+-in future, browser will inject cookie id into later requests so server can identify the user
+-in essence, cookies simulate user sessions over an otherwise stateless HTTP connection
+-cookies can be used to track information which can be sold (privacy concerns) - Cookie Central
+
+2.2.5 Web Caching
+-web caches (proxy servers)
+-satisfies requests on behalf of web servers
+-has its own storage and keeps copies of recently requested objects
+-browser may first hit proxy before going to actual destination web server
+-when a request is received, it checks storage for presence of file
+-if it has it, it sends it back to client without requesting from server
+-if not, forward the request to the server, receive object and store it, forward it back to original client
+-web caches, usually installed by ISP
+-reduce response time for clients, esp if bottleneck exists between client-server
+-reduce traffic on ISPs access link, reduce Internet traffic in general
+-web caches are inexpensive compared to increasing access link bandwidth
+-CDNs installs many geographically distributed caches throughout Internet, localizing traffic, Akamai, Limelight, Google, Microsoft
+
+2.2.6 Conditional GET
+-cached objects may get stale
+-conditional GET, HTTP request contains IF-modified-since
+-if server has not modified object, just grab copy from cache
+-saves on transferring the object over and over
+
+2.4 Email
+-one of the most popular and widely used apps
+-asynchronous communication, people send and receive at their leisure
+
+Three main components: User Agents, mail servers, Simple Mail Transfer Protocol (SMTP)
+-user-agents allow users read, reply, forward, save messages, eg Outlook, Apple Mail, Thunderbird
+-on the mail servers, each user has a mailbox for messages that have been sent to them
+-email is sent from one person's user-agent to their mail server and then forwarded to the destination mail server and user-agent
+-SMTP uses TCP
+-mail servers act as both clients and servers when they send and receive messages to each other
+
+2.4.1 SMTP
+-much older than HTTP, has some archaic qualities
+-restricts body of messages to 7-bit ASCII, made sense when it was created for messages that were small
+-binary multimedia must be encoded in ASCII before being sent with SMTP (HTTP, does not require encoding)
+-SMTP does not user intermediate mail servers, each one contacts another directly
+-mail servers queue messages and attempt to resend if it fails
+-runs on TCP, port 25
+
+2.4.2 Comparison of SMTP and HTTP
+-both transfer files from clients and servers
+-HTTP is mostly a pull protocol,  people pull information when needed
+-SMTP is mostly a push protocol, messages are pushed between servers
+-SMTP requires message be 7-bit ASCII, if not it needs to be re-encoded as ASCII, HTTP no restriction
+-HTTP encapsulates each object in its own HTTP response, email bundles everything together
+
+2.4.3 Mail Message Formats
+-message headers with To/From, subject, body (in ASCII)
+-separate from SMTP request headers
+
+2.4.4 Mail Access Protocols
+-messages are usually read on local user-agent, makes sense to store messages locally
+-to SMTP directly, receiver would have to be always-on
+-clients make use of shared mail servers, but SMTP is a push protocol and retrieving mail from mail server is a pull
+-SMTP can transfer messages from one server to the receiving server, but mail client must pull from server
+-mail access protocols for access mail from servers:
+--Post Office Protocol, v3 (POP3)
+--Internet Mail Access Protocol (IMAP)
+--HTTP
+
+POP3
+-TCP connection opened between mail user agent and mail server, port 110
+-auth -> transaction -> update
+-Auth: username/pw
+-Transaction: retrieve messages, mark messages for deletion, remove deletion marks, mail stats
+-Update: After quit, messages that were marked for delete are removed
+
+Transaction: agent issues commands, server responds to each one with reply
+-OK or ERR
+-download and delete mode or download and keep mode (delete after reading off server or keep for later access)
+-POP3 session, server maintains some state, messages marked for deletion, does not carry state across sessions
+
+IMAP
+-POP3 does not give functionality or organizing messages into folders
+-more features, more complex
+-messages are associated with folders, default INBOX
+-search folders, create folders, move messages
+-IMAP maintains state across sessions, eg. message folders
+-user agent can obtain just parts of message header, good for low-bw connection
+
+Web Email
+-web browser communicates with mail server via HTTP
+-messages are sent from browser using HTTP rather than POP3 or IMAP
+-underlying mail servers still use SMTP
+
+2.5 Domain Name System
+-internet hosts can be identified with hostnames, easier to remember for people (yahoo.ca)
+-street address vs exact latitude and longitude
+-hosts are also identified by IP addresses, used by routers
+-hostnames map to IP addresses
+-IP address consists of 4 bytes, octets, 0 to 255 x.x.x.x
+-IP address is hierarchical, scan from left to right, more specific as you go further right
+
+2.5.1 DNS Services
+-blockchain
+-DNS is a distributed database in a hierarchy of DNS servers
+-DNS servers usually UNIX machines running Berkeley Internet Name Domain (BIND) software
+-DNS protocol runs over UDP on port 53
+-DNS is used by app layer protocols - HTTP, SMTP, FTP, translate hostnames into IP addresses
+-host runs client side version of DNS application
+-browser obtains hostname from URL and queries DNS server
+-DNS server responds with corresponding IP address
+-once browser receives IP address from DNS, it initiates TCP connection to the HTTP server process on port 80
+-addresses are usually cached on closer servers
+
+DNS provides
+-host aliasing: host may have multiple host names, other hostnames may resolve to the primary canonical hostname
+-aliases are easier to remember
+-mail server aliasing: mail server address can be aliased to other names
+-load distribution: a set of addresses may be associated to a single canonical hostname for large sites with multiple servers
+-server responds with full list, but rotates ordering
+-traffic is distributed across replicated web servers
+-Akamai have used DNS to provide web content distribution
+
+2.5.2 How DNS works
+-to the using application, DNS acts as a translation service for hostnames to IPs
+-simple design of DNS would be one central server that has all mappings
+--all clients would direct queries to a single server
+--main downsides are single point of failure, volume, distant centralized database, maintenance cost
+--cannot possibly scale
+
+Distributed Hierarchical Database
+-large number of servers distributed around teh world
+-no single DNS has all mappings
+-Root DNS, top level domain (TLD) DNS, and authoritative DNS
+-for domain google.com, client contacts root DNS for TLD DNS servers -> find .com DNS server
+-com DNS servers returns auth server for google.com which returns IP for google.com
+-each level requires separate query message
+
+Root
+-13 DNS servers, A to M
+-all are replicated servers
+-247 root servers as of 2011
+
+TLD
+-.com, .org, .net, etc, country domains .ca, .fr, etc
+-Verisign manages TLD for .com, Educause for .edu
+-IANA TLD for listings
+
+Authoritative Servers
+-orgs with publicly accessible hosts provide DNS records that map names of hosts to IPs
+-may host own DNS or pay another service provider
+
+Local DNS
+-ISPs, like university, company, residential ISP - has local DNS (also called default name server)
+-when host connects to ISP, ISP provides host IP address of local DNS servers through DHCP
+-physically close to the host
+-local DNS acts as proxy, queries from hosts are sent to local DNS first before forwarding to rest of DNS server hiearchy
+-often TLD will not know exact authoritative DNS server for a domain, may only have intermediate server
+
+-recursive queries or iterative queries
+-in practice, host to local is recursive query (local completely resolves query to IP), other requests are iterative (each server resolve a single step of hiearchy)
+
+DNS caching
+-reduce delays and minimize volume of requests
+-in a query chain, when a DNS server receives a reply, it caches the mapping in local memory
+-cached results get discarded and refreshed on a regular basis
+-local DNS cache common TLDs, bypassing root DNS
+
+2.5.3 DNS Records and Messages
+-DNS servers store resource records (RRs), including RRs that directly map hostnames to IPs
+-each reply contains one or more RRs
+
+RR: (Name, Value, Type, TTL)
+TTL is time to live of resource record, when it should be removed from cache
+
+Type
+If Type=A, Name is a hostname, value is IP address
+If Type=NS, Name is domain, value is hostname of auth DNS for that domain
+If Type=CNAME, Value is canonical host name for the alias in Name
+If Type=MX, Value is canonical name of mail server that has alias Name
+
+-Non-authoritative servers may have Type A records for hosts
+-if a server does not have a Type A for a host, it will have an NS record with hostname, and accompanying type A record for auth DNS server
+
+DNS Messages
+-more than just queries and replies
+
+Full message consists of:
+
+Header
+-12 bytes, 16-bit ID of query, which gets copied into reply, which allows client to match queries and replies
+-flags: query (0) or reply (1), 1 bit in replies if server is auth or not, 1 bit for recursion desired, 1 bit recursion available
+-number-of fields, quantity of data sections that follow header
+
+Question
+-info about query being made
+-name field, name that is being queried
+-type of question, host address of name (Type A) or mail server name (Type MX)
+
+Answer
+-for replies from DNS server, answer section contains resource records for name that was queried
+-can return multiple RRs, since host can have multiple addresses (replicated servers)
+
+Authority
+-RRs for other auth servers
+
+Additional
+-other helpful RRs, MX query contain RR for canonical hostname, may also just include Type A record of IP address for that canonical hostname
+
+Can use nslookup tool to try DNS Requests, wireshark lab
+
+Inserting Records into DNS Database
+-register new hostname at a registrar, commericial entity that verifies uniqueness of domain name (godaddy)
+-name is entered into DNS database and charges fee
+-ICANN accredits different registrars (internic.net)
+-provide registrar with names and IP addresses of primary, secondary, and auth DNS servers
+
+2.6 P2P Applications
+
+-does not rely on always-on infrastructure, scales with individual clients (peers)
+-suitable for file distribution and database distribution
+
+2.6.1 P2P File Distribution
+-in client-server, server must distribute file to each individual client, requires lots of bandwidth
+-P2P allows each peer to redistribute any portion of the file to any other peers
+-BitTorrent protocol
+
+Scalability
+-distribution time scales linearly with number of peers in Client-server
+-in P2P, each client can use some of its upload capacity to redistribute
+-distribution time is always less than client-server architecture, and stays low for any number of peers
+
+BitTorrent
+-collection of peers participating in distribution is a torrent
+-peers download equal-size chunks of file from one another (256kb)
+-a peer starts out with none, but can redistribute to another client as soon as it has any
+-once it has full file, it may leave torrent or stay as a seeder
+-peers may leave and rejoin at any time
+-each torrent has a tracker, clients register with tracker when joining torrent
+-tracker keeps track of peers
+-when new client joins, tracker randomly select subset of peers from current torrent participants and sends IP addresses
+-new client establishes TCP connections to each one
+-peers get dropped and added all the time
+-each peer has different subset of file and know which chunks neighbours have, need to decide what to request and what to send
+-Rarest-First: determine chunks not in possession, try to obtain chunks with fewest repeated copies from among neighbours, try to equalize chunks
+-Give priority to neighbours that are supplying data at highest rate, determine best set of neighbours - unchoked peers
+-randomly start sending to another peer to become optimistically unchoked
+-lots of extra mechanics: pieces, pipelining, random-first selection, endgame mode, anti-snubbing
+-tit-for-tat incentive mechanism can be circumvented
+
+2.6.2 Distributed Hash Tables (DHT)
+-implementing simple database in P2P network, key-value pairs
+-in client-server, server simply acts as central authority with full database
+-in DHT, each peer holds a small subset of kv pairs
+-peer can query DB and then distributed DB can locate peer that holds kv pair
+-naive approach is to randomly distribute keys to peers, peers maintain list of all other participants
+-unscalable, peers have to know about each other and requests have to be sent to all peers to check for presence of kv
+
+More Elegant approach
+-assign each peer a unique identifier in [0, 2^n-1] for some n, can be represented by n-bits
+-each key must by an integer in same range, use a hash function to map keys to integer in this range
+-collision of hash is possible, but unlikely
+-assign kv pairs to peers with the "closest" identifier, but different ways to defining closeness
+-for key insert, peer determines other peer with closest identifier and sends KV pair to that peer
+-however, each peer needs to know all other peers in the DHT, which is unscalable
+
+Circular DHT
+-peers are only aware of their predecessor and successor
+-example of an overlay network, peers form abstract logical network above underlay of actual links, routers, and hosts
+-peer sends out message querying for identifier, which follows circle of peers until it reaches peer responsible. This peer directly contact original requester
+-some optimizations can be made concerning messages sent vs number of peers that need to be tracked
+-a peer tracks also "Shortcut" peers to jump ahead of its message sends
+-DHT can be designed such that neighbours tracked and messages sent is O(logN)
+-optimization of mesh vs overlay topology
+
+Peer Churn
+-peers can come and go without warning, must design DHT with this in mind
+-a peer can track its next two successors and periodically verify they are present
+-when a peer leaves, the two preceding peers update themselves
+-peer shifts rechecks for new successors from new successor chains
+-when a peer joins, peer asks and searches for its position in the graph and then notifies appropriate neighbours of its insertion
+-BitTorrent uses DHT to create distribution tracker, bittorent peers can query DHT with torrent ID, find peer responsible for tracking other peers in torrent
+
+2.7 Socket Programming: Network Applications
+-skip for later exercise, refer to Beej's Socket Programming
+
+[7th]2.6 Video Streaming and CDNs
+-Netflix (37) and Youtube (16) combine for 52% of all residential bandwidth
+
+2.6.1 Internet Video
+-underlying medium is prerecorded video (movie, TV, sporting event) placed on servers
+-videos are sequences of images displayed at constant rate
+-uncompressed, digitally encoded images consists of arrays of pixels that encode luminance and colour
+-video can be compressed, trading quality for bitrate
+-compressed video can range from 100kbps to 10Mbps, translates to huge traffic and storage
+-different compressed versions can be stored and sent
+
+2.6.2 HTTP Streaming/DASH
+(Live Streaming/Twitch)
+-HTTP streaming, video is stored at HTTP server as a file
+-client establishes TCP connection and issues GET for file
+-HTTP response messages are sent as quickly as possible and stored in a buffer which then get played when it exceeds threshold
+-HTTP streaming widely employed, but sends same encoded video to all clients
+-Dynamic Adaptive streaming over HTTP (DASH) is employed
+--video is encoded in different versions with different bitrates
+--client dynamically requests chunks of video segments of a few seconds in length
+--picks chunks based on available bandwidth
+--manifest file tracks different versions of file available
+
+2.6.3 Content Distribution Networks
+-challenge of distributing massive amounts of data is met with CDNs
+-CDN manages servers in multiple geos, stores copies of videos in its servers and redirects requests to best location
+-private CDN like Google hosts Youtube
+-Third-party like Akamai, Limelight, Level-3
+
+CDNs usually implement one of two server placement strategies
+
+Enter Deep: Pioneered by Akamai, enter deep into access networks of ISP, deploying clusters in ISPs globally, get close to end users, maintenance is difficult
+
+Bring Home: Other CDNs build clusters at Internet exchange points and interface with ISPs there, cheaper and easier to maintain, longer delays
+
+CDNs replicate content on servers, but can't replicate full copy of all content
+-instead only store videos that are commonly viewed in certain regions
+-constant refresh content stored locally on servers, based on demand
+-fetch from central or other clusters when suitable
+
+CDN Operation
+
+1. User clicks on video link, host sends DNS request for video URL
+2. Local DNS relays query to auth DNS server for domain
+3. Auth DNS detects video request, responds with hostname to CDN storing video
+4. DNS query enter CDNs private DNS infrastructure
+5. Private DNS for CDN responds to request with location of content server with video
+
+Cluster Selection Strategies
+-geo closest, geolocation database (Quova/Maxmind) based on requester IP and content server IP
+-usually good, but sometimes bad for clients where geo closest is not actually closest in terms of number of network jumps
+-some end users use remotely configured DNS, may be far from their actual location
+-can also perform real-time measurements of delay and loss performance between clusters and clients
+-can ping to probe LDNSs around world, but LDNS may not respond to probes
+
+2.6.4 Netflix, Youtube, and Kankan
+
+Netflix
+-Amazon cloud and private CDN
+-Amazon cloud hosts website, handles content ingestion, processing, uploading to Netflix CDN
+-multiple versions of videos are processed for DASH sending
+-servers at IXPs and local ISPs
+-Netflix only handles video, thus doesn't need to use DNS, just software that specifies clients which CDN is best
+-uses push caching, content is pushed at off-peak hours rather during cache misses
+
+Youtube
+-servers at IXPs and ISPs
+-uses pull caching and DNS redirect
+-can direct users to further clusters for load balancing
+-HTTP streaming, does not use DASH, has user select version
+-uses byte range request to limit flow of transmitted data after it has been pre-fetched to reduce waste if video is skipped through or closed early
+
+Kankan
+-P2P delivery
+-requesting peer requests chunks of video from peers, requests are preferentially for chunks that are played back soon
+-hybrid CDN/p2p
+-pushes content to CDNs, peers request from CDN as well as peers
+-minimizes costs on infrastructure while maintaining short initial startup delay
